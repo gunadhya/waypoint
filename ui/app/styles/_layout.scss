@@ -12,7 +12,7 @@ body {
   flex-grow: 1;
   width: 100vw;
   max-width: 1600px;
-  margin: 0 auto;
+  margin: 0;
   padding: scale.$lg-3 scale.$lg-4 scale.$lg-5;
 }
 
@@ -67,11 +67,24 @@ ul {
 ul.sidebar {
   grid-area: menu;
 
+  li:first-child {
+    hr {
+      border-top: 0;
+    }
+  }
+
   .active {
-    border-radius: 5px;
-    border-bottom: 0px;
+    hr {
+      border-top: 0;
+    }
     @media (prefers-color-scheme: light) {
       background-color: rgb(var(--highlighted-list-item));
+    }
+  }
+
+  .active + li {
+    hr {
+      border-top: 0;
     }
   }
 

@@ -1,5 +1,9 @@
 {{page-title @model.application.application}}
-
+{{#if (and
+  (not-eq this.target.currentRouteName 'workspace.projects.project.app.build.resource')
+  (not-eq this.target.currentRouteName 'workspace.projects.project.app.deployment.deployment-seq.resource')
+  (not-eq this.target.currentRouteName 'workspace.projects.project.app.release.resource')
+)}}
 <PageHeader @iconName="git-repository">
   <div class="title">
     <div class="title-wrapper">
@@ -69,7 +73,5 @@
     {{t "nav.exec"}}
   </LinkTo>
 </Pds::TabNav>
-
-<div class="grid">
-  {{outlet}}
-</div>
+{{/if}}
+{{outlet}}

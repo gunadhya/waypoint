@@ -7,11 +7,11 @@ import { setupMirage } from 'ember-cli-mirage/test-support';
 import { setupSession } from 'waypoint/tests/helpers/login';
 
 const url = '/default/microchip/app/wp-bandwidth/deployments';
+const redirectUrl = '/default/microchip/app/wp-bandwidth/deployment/seq/'; // concat with length of deployments array in test
 
 const page = create({
   visit: visitable(url),
   list: collection('[data-test-deployment-list] li'),
-  deploymentLinks: collection('[data-test-external-deployment-button]'),
   destroyedBadges: collection('[data-test-destroyed-badge]'),
   showDestroyed: clickable('[data-test-display-destroyed-button]'),
 });
@@ -21,7 +21,7 @@ module('Acceptance | deployments list', function (hooks) {
   setupMirage(hooks);
   setupSession(hooks);
 
-  test('visiting deployments page', async function (assert) {
+  test('visiting deployments page redirects to latest', async function (assert) {
     let project = this.server.create('project', { name: 'microchip' });
     let application = this.server.create('application', { name: 'wp-bandwidth', project });
     this.server.createList('deployment', 3, 'random', { application });
@@ -29,7 +29,7 @@ module('Acceptance | deployments list', function (hooks) {
     await page.visit();
 
     assert.equal(page.list.length, 3);
-    assert.equal(currentURL(), url);
+    assert.equal(currentURL(), redirectUrl + 3);
   });
 
   test('visiting deployments page with mutable deployments', async function (assert) {
@@ -77,40 +77,10 @@ module('Acceptance | deployments list', function (hooks) {
     await page.visit();
 
     assert.equal(page.list.length, 4);
-    assert.equal(page.deploymentLinks.length, 1);
 
     await page.showDestroyed();
 
     assert.equal(page.list.length, 5);
-    assert.equal(page.deploymentLinks.length, 1);
     assert.equal(page.destroyedBadges.length, 1);
-  });
-
-  test('status reports appear where available', async function (assert) {
-    let project = this.server.create('project', { name: 'microchip' });
-    let application = this.server.create('application', { name: 'wp-bandwidth', project });
-
-    this.server.create('deployment', 'random', {
-      application,
-      sequence: 3,
-      statusReport: this.server.create('status-report', 'alive', { application }),
-    });
-    this.server.create('deployment', 'random', {
-      application,
-      sequence: 2,
-      statusReport: this.server.create('status-report', 'ready', { application }),
-    });
-    this.server.create('deployment', 'random', {
-      application,
-      sequence: 1,
-      statusReport: this.server.create('status-report', 'down', { application }),
-    });
-
-    await page.visit();
-
-    let badges = findAll(`[data-test-deployment-list] [data-test-status-report-indicator]`);
-    let statuses = badges.map((b) => b.getAttribute('data-test-status-report-indicator'));
-
-    assert.deepEqual(statuses, ['alive', 'ready', 'down'], `correct status badges appear in deployment-list`);
   });
 });

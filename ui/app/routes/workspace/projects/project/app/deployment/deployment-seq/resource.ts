@@ -24,7 +24,9 @@ export default class extends Route {
   }
 
   model({ resource_id }: Params): Model {
-    let deployment = this.modelFor('workspace.projects.project.app.deployment') as DeploymentRouteModel;
+    let deployment = this.modelFor(
+      'workspace.projects.project.app.deployment.deployment-seq'
+    ) as DeploymentRouteModel;
     let resources = deployment.statusReport?.resourcesList ?? [];
     let resource = resources.find((r) => r.id === resource_id);
 

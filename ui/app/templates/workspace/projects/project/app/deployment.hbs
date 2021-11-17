@@ -1,37 +1,42 @@
 {{page-title (concat @model.application.application "Deployments")}}
-
-<ul data-test-deployment-list class="sidebar list">
-  {{#each this.deploymentsByGeneration key="generationID" as |group|}}
-    {{#each group.deployments key="id" as |deployment|}}
-      {{#if (or this.isShowingDestroyed (not-eq deployment.state 4))}}
-        <AppItem::Deployment @deployment={{deployment}} @latest={{group.deployments.[0]}} />
-      {{/if}}
-    {{/each}}
-  {{else}}
-    <EmptyState>
-      <p>There are no deployments to display for this app yet</p>
-      <p>To create your first build, you can run
-        <CopyableCode @ref="empty-deploy" @inline="true">
-          <code id="empty-deploy">waypoint deploy</code>
-        </CopyableCode>
-        from the CLI</p>
-    </EmptyState>
-  {{/each}}
-</ul>
-{{#if (and this.hasMoreDeployments (not this.isShowingDestroyed))}}
-  <div class="destroyed-deployments-filter">
-    <Pds::HelpText>
-      {{t "page.deployments.destroyed_and_hidden_state"}}
-      <Pds::Button
-        data-test-display-destroyed-button
-        @compact={{true}}
-        @variant="ghost"
-        {{on "click" this.showDestroyed}}>
-        {{t "page.deployments.display_destroyed"}}
-      </Pds::Button>
-    </Pds::HelpText>
+{{#let (not-eq this.target.currentRouteName 'workspace.projects.project.app.deployment.deployment-seq.resource') as |isNotResourcePage|}}
+  <div class={{if isNotResourcePage "grid"}}>
+  {{#if isNotResourcePage}}
+    <ul data-test-deployment-list class="sidebar list">
+      {{#each this.deploymentsByGeneration key="generationID" as |group|}}
+        {{#each group.deployments key="id" as |deployment|}}
+          {{#if (or this.isShowingDestroyed (not-eq deployment.state 4))}}
+            <AppItem::Deployment @deployment={{deployment}} @latest={{group.deployments.[0]}} />
+          {{/if}}
+        {{/each}}
+      {{else}}
+        <EmptyState>
+          <p>There are no deployments to display for this app yet</p>
+          <p>To create your first build, you can run
+            <CopyableCode @ref="empty-deploy" @inline="true">
+              <code id="empty-deploy">waypoint deploy</code>
+            </CopyableCode>
+            from the CLI</p>
+        </EmptyState>
+      {{/each}}
+    </ul>
+    {{#if (and this.hasMoreDeployments (not this.isShowingDestroyed))}}
+      <div class="destroyed-deployments-filter">
+        <Pds::HelpText>
+          {{t "page.deployments.destroyed_and_hidden_state"}}
+          <Pds::Button
+            data-test-display-destroyed-button
+            @compact={{true}}
+            @variant="ghost"
+            {{on "click" this.showDestroyed}}>
+            {{t "page.deployments.display_destroyed"}}
+          </Pds::Button>
+        </Pds::HelpText>
+      </div>
+    {{/if}}
+    {{/if}}
+    <div class="panel">
+      {{outlet}}
+    </div>
   </div>
-{{/if}}
-<div class="panel">
-  {{outlet}}
-</div>
+{{/let}}

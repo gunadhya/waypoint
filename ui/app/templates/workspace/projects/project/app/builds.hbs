@@ -1,20 +1,21 @@
 {{page-title (concat @model.application.application "Builds")}}
+<div class="grid">
+  <ul data-test-build-list class="sidebar list">
+    {{#each @model key="id" as |build|}}
+      <AppItem::Build @build={{build}} />
+    {{else}}
+      <EmptyState>
+        <p>There are no builds to display for this app yet</p>
+        <p>To create your first build, you can run
+          <CopyableCode @ref="empty-build" @inline="true">
+            <code id="empty-build">waypoint build</code>
+          </CopyableCode>
+          from the CLI</p>
+      </EmptyState>
+    {{/each}}
+  </ul>
 
-<ul data-test-build-list class="sidebar list">
-  {{#each @model key="id" as |build|}}
-    <AppItem::Build @build={{build}} />
-  {{else}}
-    <EmptyState>
-      <p>There are no builds to display for this app yet</p>
-      <p>To create your first build, you can run
-        <CopyableCode @ref="empty-build" @inline="true">
-          <code id="empty-build">waypoint build</code>
-        </CopyableCode>
-        from the CLI</p>
-    </EmptyState>
-  {{/each}}
-</ul>
-
-<div class="panel">
-  {{outlet}}
+  <div class="panel">
+    {{outlet}}
+  </div>
 </div>

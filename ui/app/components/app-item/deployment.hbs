@@ -1,8 +1,10 @@
 <li
   class="app-item
   {{if (not-eq @deployment.sequence @latest.sequence) "app-item--previous"}}
-  {{if (eq @deployment.state 4) "app-item--destroyed"}}"
+  {{if (eq @deployment.state 4) "app-item--destroyed"}}
+  {{if (is-active 'workspace.projects.project.app.deployment.deployment-seq' @deployment.sequence) "active"}}"
 >
+  <hr>
   <LinkTo @route="workspace.projects.project.app.deployment.deployment-seq" @models={{array @deployment.sequence}}>
     <p>
       <b class="badge badge--version">v{{@deployment.sequence}}</b>
@@ -16,7 +18,6 @@
       </b>
     {{/if}}
   </LinkTo>
-  <hr>
   {{#if (not-eq @latest.id @deployment.id)}}
   <small class="replacement-info">
     {{t "page.deployments.replaced_label"}}<b class="badge badge--version">v{{@latest.sequence}}</b>
